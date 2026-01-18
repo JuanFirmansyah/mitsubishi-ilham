@@ -10,7 +10,7 @@ const HERO_SLIDES = [
     desc: "Gratis Towing, Program Servis & Bodi Cat khusus wilayah Sumatra.",
     cta1: "Cari Dealer",
     cta2: "Layanan Darurat",
-    image: "/hero/hero-1.png",
+    image: "/hero/hero-1.png", // ganti dengan gambar kamu
   },
   {
     id: 2,
@@ -67,11 +67,11 @@ const CAR_MODELS = [
   },
 ];
 
+
 export default function Home() {
-  const [cookieAccepted, setCookieAccepted] = useState<boolean | null>(null);
+  const [cookieAccepted, setCookieAccepted] = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeCar, setActiveCar] = useState(1);
-  const [isClient, setIsClient] = useState(false);
 
   const prevCar = () => {
     setActiveCar((p) => (p === 0 ? CAR_MODELS.length - 1 : p - 1));
@@ -79,11 +79,10 @@ export default function Home() {
 
   const nextCar = () => {
     setActiveCar((p) => (p === CAR_MODELS.length - 1 ? 0 : p + 1));
-  };
+  };  
 
-  /* Pastikan hanya berjalan di client */
+  /* Cookie */
   useEffect(() => {
-    setIsClient(true);
     const v = localStorage.getItem("mm_cookie_ok");
     setCookieAccepted(v === "1");
   }, []);
@@ -104,29 +103,10 @@ export default function Home() {
     setCookieAccepted(true);
   };
 
-  // Tampilkan loading atau kosong sampai client side terdeteksi
-  if (!isClient || cookieAccepted === null) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white">
-        {/* Skeleton header untuk menghindari hydration mismatch */}
-        <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50">
-          <div className="max-w-6xl mx-auto px-4 py-4 md:py-5">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 min-w-0 flex-1 md:flex-none">
-                <div className="w-12 h-12 flex-shrink-0 bg-slate-700 rounded" />
-                <div className="min-w-0" />
-              </div>
-            </div>
-          </div>
-        </header>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white">
       {/* Cookie Banner */}
-      {cookieAccepted === false && (
+      {!cookieAccepted && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-t border-slate-700/50">
           <div className="max-w-6xl mx-auto px-4 py-4 md:py-6 flex flex-col md:flex-row gap-4 md:gap-6 items-center">
             <p className="text-sm md:text-base leading-relaxed text-slate-300 max-w-2xl">
@@ -149,22 +129,9 @@ export default function Home() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0 flex-1 md:flex-none">
               <div className="w-12 h-12 flex-shrink-0">
-                <Image 
-                  src="/logo.svg" 
-                  alt="Mitsubishi Logo" 
-                  width={48} 
-                  height={48}
-                  priority
-                  onError={(e) => {
-                    // Fallback jika gambar tidak ditemukan
-                    const target = e.target as HTMLImageElement;
-                    target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%231f2937'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24'%3EMM%3C/text%3E%3C/svg%3E";
-                  }}
-                />
+                <Image src="/logo.svg" alt="Mitsubishi Logo" width={48} height={48} />
               </div>
-              <div className="min-w-0 hidden md:block">
-                <div className="font-bold text-lg">MITSUBISHI</div>
-                <div className="text-xs text-slate-400">MOTORS</div>
+              <div className="min-w-0">
               </div>
             </div>
             
@@ -193,7 +160,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Carousel */}
+      {/* /* Hero Carousel */ }
       <section className="relative h-[75vh] md:h-screen overflow-hidden">
         {/* Slides */}
         {HERO_SLIDES.map((slide, index) => (
@@ -210,7 +177,6 @@ export default function Home() {
               fill
               priority={index === 0}
               className="object-cover"
-              sizes="100vw"
             />
 
             {/* Overlay */}
@@ -244,10 +210,10 @@ export default function Home() {
                   className={`flex flex-col sm:flex-row gap-4 transition-all duration-700 delay-300
                   ${index === activeSlide ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 >
-                  <a className="px-8 py-4 bg-red-600 hover:bg-red-700 rounded-2xl font-bold shadow-2xl text-center cursor-pointer">
+                  <a className="px-8 py-4 bg-red-600 hover:bg-red-700 rounded-2xl font-bold shadow-2xl text-center">
                     {slide.cta1}
                   </a>
-                  <a className="px-8 py-4 border-2 border-white/40 hover:border-white rounded-2xl text-white text-center cursor-pointer">
+                  <a className="px-8 py-4 border-2 border-white/40 hover:border-white rounded-2xl text-white text-center">
                     {slide.cta2}
                   </a>
                 </div>
@@ -265,7 +231,6 @@ export default function Home() {
               className={`w-3 h-3 rounded-full transition-all
                 ${i === activeSlide ? "bg-white scale-125" : "bg-white/40 hover:bg-white/70"}
               `}
-              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
@@ -274,6 +239,7 @@ export default function Home() {
       {/* Model Showcase */}
       <section className="relative py-24 md:py-32 bg-white text-black overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 relative">
+
           {/* Slider */}
           <div className="relative flex items-center justify-center">
             {CAR_MODELS.map((car, index) => {
@@ -335,7 +301,6 @@ export default function Home() {
           <button
             onClick={prevCar}
             className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center border border-black/30 rounded-full hover:bg-black hover:text-white transition"
-            aria-label="Previous car"
           >
             ←
           </button>
@@ -343,7 +308,6 @@ export default function Home() {
           <button
             onClick={nextCar}
             className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center border border-black/30 rounded-full hover:bg-black hover:text-white transition"
-            aria-label="Next car"
           >
             →
           </button>
@@ -356,6 +320,7 @@ export default function Home() {
 
         <div className="relative max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
+
             {/* LEFT */}
             <div>
               <span className="inline-block mb-6 px-5 py-2 bg-red-600/20 border border-red-600/40 rounded-full text-xs tracking-[0.35em] uppercase text-red-300">
@@ -384,14 +349,6 @@ export default function Home() {
                     width={64}
                     height={64}
                     className="rounded-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        parent.textContent = 'IL';
-                      }
-                    }}
                   />
                 </div>
                 <div>
@@ -418,7 +375,6 @@ export default function Home() {
               <a
                 href="https://wa.me/6281242789123"
                 target="_blank"
-                rel="noopener noreferrer"
                 className="block w-full text-center px-8 py-4 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-2xl shadow-xl transition-all hover:scale-[1.02]"
               >
                 💬 Hubungi via WhatsApp
@@ -431,6 +387,7 @@ export default function Home() {
         </div>
       </section>
 
+
       {/* Empowering Every Journey */}
       <section className="relative py-24 md:py-32 lg:py-40 bg-gradient-to-br from-white via-slate-50/50 to-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -440,6 +397,12 @@ export default function Home() {
             <div className="lg:col-span-8 relative group">
               <div className="relative rounded-3xl overflow-hidden border border-slate-100/50 shadow-2xl shadow-slate-200/50 backdrop-blur-sm bg-white/90 hover:shadow-3xl hover:shadow-slate-300/60 transition-all duration-700 hover:-translate-y-2 hover:scale-[1.02]">
                 
+                {/* Subtle Background Pattern */}
+                {/* <div className="absolute inset-0 opacity-5">
+                  <div className="absolute top-10 left-10 w-20 h-20 border border-slate-200 rounded-full -rotate-12" />
+                  <div className="absolute bottom-20 right-20 w-24 h-24 border-2 border-slate-200/50 rounded-full rotate-6" />
+                </div> */}
+
                 {/* Single Image Container - Fixed Size */}
                 <div className="relative z-20 flex items-center justify-center h-[28rem] md:h-[32rem] lg:h-[36rem]">
                   <div className="relative w-full h-full md:w-full md:h-full">
@@ -449,8 +412,9 @@ export default function Home() {
                       fill
                       className="object-cover rounded-3xl shadow-3xl shadow-slate-300/50 group-hover:shadow-4xl group-hover:shadow-slate-400/60 transition-all duration-700 hover:scale-[1.05] origin-center"
                       priority
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
+                    
+                    {/* Dynamic Glow Effect */}
                   </div>
                 </div>
 
@@ -508,6 +472,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
 
       {/* Life's Adventure */}
       <section id="adventure" className="py-24 md:py-32 bg-gradient-to-b from-slate-900/50 to-slate-950/50">
