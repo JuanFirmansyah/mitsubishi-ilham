@@ -1,0 +1,33 @@
+// public/robots.txt
+User-agent: *
+Allow: /
+
+# Block sensitive directories
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /dashboard/
+
+# Allow important bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Sitemap location
+Sitemap: https://mitsubishiwithjuan.com/sitemap.xml
+
+# Custom rules for Mitsubishi With Juan
+# Biarkan Google mengindex semua halaman mobil dan konten
+User-agent: *
+Allow: /mobil-baru/
+Allow: /mobil-bekas/
+Allow: /sparepart/
+Allow: /blog/
+Allow: /promo-makassar/
+
+# Optimasi crawl budget
+Crawl-delay: 1
